@@ -63,7 +63,7 @@ int play(int column, int player) {
 	for (int i = 1; i < NB_LINE; i++) {
 		if (grid[i][column-1] != 0) {
 			grid[i-1][column-1] = player;
-			win = win_vertical(column-1, player);
+			win = check_win(i-1, column-1, player);
 			if (win == 1) {
 				return 1;
 			}
@@ -72,7 +72,7 @@ int play(int column, int player) {
 		// If we play on the last line
 		if (i == NB_LINE - 1) {
 			grid[i][column-1] = player;
-			win = win_vertical(column, player);
+			win = check_win(i, column-1, player);
 			if (win == 1) {
 				return 1;
 			}
@@ -134,6 +134,84 @@ int win_vertical(int column, int player) {
 		previous = current;
 	}
 	return win;
+}
+
+
+int win_diagonal(int line, int column, int player) {
+	int win = 0;
+	int count = 1;
+	int symbol = player;
+	int current;
+	int previous;
+
+	// Right diagonal
+	int i = line;
+	int j = column;
+	// Find the lowest extremity of the diagonal
+	while (i < NB_LINE && j > 0) {
+		i++;
+		j--;
+	}
+
+	previous = grid[i][j];
+	// Go up in the diagonal
+	while (i > 0 && j < NB_COLUMN) {
+		i--;
+		j++;
+		current = grid[i][j];
+		if (current == symbol && current == previous) {
+			count += 1;
+		} else {
+			count = 1;
+		}
+
+		// If 4 aligned
+		if (count == 4) {
+			win = 1;
+			break;
+		}
+		previous = current;
+	}
+
+
+	// Left diagonal
+	i = line;
+	j = column;
+	// Find the lowest extremity of the diagonal
+	while (i < NB_LINE && j < NB_COLUMN) {
+		i++;
+		j++;
+	}
+
+	previous = grid[i][j];
+	// Go up in the diagonal
+	while(i > 0 && j > 0) {
+		i--;
+		j--;
+		current = grid[i][j];
+		if (current == symbol && current == previous) {
+			count += 1;
+		} else {
+			count = 1;
+		}
+
+		// If 4 aligned
+		if (count == 4) {
+			win = 1;
+			break;
+		}
+		previous = current;
+	}
+
+	return win;
+}
+
+
+int check_win(int line, int column, int player) {
+	if (win_horizontal(line, player) || win_vertical(column, player) || win_diagonal(line, column, player)) {
+		return 1;
+	}
+	return 0;
 }
 
 
