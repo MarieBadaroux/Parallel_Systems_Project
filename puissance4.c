@@ -2,13 +2,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "puissance4.h"
+#include "minmax.h"
 
-#define NB_COLUMN 7
-#define NB_LINE 6
-#define PLAYER1 1
-#define PLAYER2 2
 
-static int grid[NB_LINE][NB_COLUMN] = {{0}};
+int grid[NB_LINE][NB_COLUMN] = {{0}};
 
 
 void display_grid(void) {
@@ -53,27 +50,27 @@ void display_grid(void) {
 }
 
 
-int play(int column, int player) {
-	int win;
-	// If the column is full
-	if (grid[0][column-1] != 0) {
-		return 0;
+int is_full(int column) {
+	if (grid[0][column] != 0) {
+		return 1;
 	}
+	return 0;
+}
 
+
+int play(int column, int player) {
 	for (int i = 1; i < NB_LINE; i++) {
-		if (grid[i][column-1] != 0) {
-			grid[i-1][column-1] = player;
-			win = check_win(i-1, column-1, player);
-			if (win == 1) {
+		if (grid[i][column] != 0) {
+			grid[i-1][column] = player;
+			if (check_win(i-1, column, player) == 1) {
 				return 1;
 			}
 			return 0;
 		}
 		// If we play on the last line
 		if (i == NB_LINE - 1) {
-			grid[i][column-1] = player;
-			win = check_win(i, column-1, player);
-			if (win == 1) {
+			grid[i][column] = player;
+			if (check_win(i, column, player) == 1) {
 				return 1;
 			}
 			return 0;
@@ -217,32 +214,56 @@ int check_win(int line, int column, int player) {
 
 int main(void) {
 	int player1_column;
+#if 0
 	int player2_column;
+#endif
 	int win;
 	
 	display_grid();
 
 	while(1) {
+		// If all columns are full
+		if (is_full(0) && is_full(1) && is_full(2) && is_full(3) && is_full(4) && is_full(5) && is_full(6)) {
+			printf("Nobody can play anymore \n"); 
+		}
+
+		// PLAYER 1
 		printf("Player 1 : ");
 		scanf("%d", &player1_column);
+		
+		// If the number of the colonne is not good
 		while (player1_column < 1 || player1_column > 7) {
 			printf("Player 1 : Error enter again the column = ");
 			scanf("%d", &player1_column);
 		}
-		win = play(player1_column, PLAYER1);
+
+		// If the column is full
+		while (is_full(player1_column-1)) {
+			printf("Player 1 : Error column full, enter an other column = ");
+			scanf("%d", &player1_column);
+		}
+
+		// Now we can play
+		win = play(player1_column-1, PLAYER1);
 		display_grid();
 		if (win == 1) {
 			printf("The player 1 win the game \n");
 			break;
 		}
 
+		// PLAYER 2
 		printf("Player 2 : ");
+		win = play_minimax(PLAYER2);
+
+#if 0
 		scanf("%d", &player2_column);
 		while (player2_column < 1 || player2_column > 7) {
 			printf("Player 2 : Error enter again the column = ");
 			scanf("%d", &player2_column);
 		}
 		win = play(player2_column, PLAYER2);
+#endif
+
 		display_grid();
 		if (win == 1) {
 			printf("The player 2 win the game \n");
