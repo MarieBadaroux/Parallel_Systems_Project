@@ -1,11 +1,12 @@
 #include <stdbool.h>
+#include <stdint.h>
 
 #define max(a,b) (a>b?a:b)
 #define min(a,b) (a<b?a:b)
 #define DEPTH 3
 
-int *possible_positions(void);
-int check_play(int column, int player);
-int evaluation(int column, int player, bool maximizingPlayer);
-int minimax(int column, int depth, bool maximizingPlayer, int player);
-int play_minimax(int player);
+uint8_t *possible_positions(void);
+uint8_t check_play(uint8_t column, uint8_t player);
+int stupid_evaluation(uint8_t column, uint8_t player, bool maximizingPlayer);
+int minimax(uint8_t column, uint8_t depth, bool maximizingPlayer, uint8_t player);
+uint8_t play_minimax(uint8_t player);
