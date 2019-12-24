@@ -19,11 +19,6 @@ int *possible_positions() {
 
 
 int check_play(int column, int player) {
-	// If the column is full
-	if (grid[0][column] != 0) {
-		return 0;
-	}
-
 	for (int i = 1; i < NB_LINE; i++) {
 		if (grid[i][column] != 0) {
 			if (check_win(i-1, column, player)) {
@@ -50,6 +45,7 @@ int evaluation(int column, int player, bool maximizingPlayer) {
 	}
 	return -check_play(column, player);
 }
+
 
 int minimax(int column, int depth, bool maximizingPlayer, int player) {
 	int eval;
@@ -86,7 +82,11 @@ int minimax(int column, int depth, bool maximizingPlayer, int player) {
 
 int play_minimax(int player) {
 	int *vec = possible_positions();
-	int res[NB_COLUMN];
+	for (int i = 0; i < NB_COLUMN; i++) {
+		printf("%i ", vec[i]);
+	}
+	printf("\n");
+	int res[NB_COLUMN] = {INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN};
 	int best_res = INT_MIN;
 	int best_column;
 
@@ -95,14 +95,21 @@ int play_minimax(int player) {
 			res[i] = minimax(i, DEPTH, true, player);
 		}
 	}
+
+	printf("\n res :");
+	for (int i = 0; i < NB_COLUMN; i++) {
+		printf("%i ", res[i]);
+	}
 	
 	for (int j = 0; j < NB_COLUMN; j++) {
-		if (res[j] > best_res) {
+		if (res[j] != INT_MIN && res[j] >= best_res) {
 			best_res = res[j];
 			best_column = j;
 		}
 	}
 
+	printf("\n best column : %i", best_column);
+
 	// We can finaly play
-	return play(best_column+1, player);
+	return play(best_column, player);
 }
