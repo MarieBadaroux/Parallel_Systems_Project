@@ -247,7 +247,7 @@ int main(void) {
 		win = play(player1_column-1, PLAYER1);
 		display_grid();
 		if (win == 1) {
-			printf("The player 1 win the game \n");
+			printf("Player 1 wins the game \n");
 			break;
 		}
 
@@ -266,7 +266,7 @@ int main(void) {
 
 		display_grid();
 		if (win == 1) {
-			printf("The player 2 win the game \n");
+			printf("Player 2 wins the game \n");
 			break;
 		}
 	}
