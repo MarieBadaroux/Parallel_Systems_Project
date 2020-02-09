@@ -47,6 +47,29 @@ int stupid_evaluation(uint8_t column, uint8_t player, bool maximizingPlayer) {
 }
 
 
+int get_heuristic_cost_simple(uint8_t aligned) {
+	switch (aligned) {
+		case 1:
+			return 1;
+		case 2:
+			return 5;
+		case 3:
+			return 50;
+		case 4:
+			return 1000;
+		default:
+			return 5000;
+	};
+}
+
+
+int get_heuristic_cost(uint8_t aligned, uint8_t free) {
+	if (aligned+free < 3)
+		return 0;
+	return get_heuristic_cost_simple(aligned);
+}
+
+
 int horizontal_alignement(uint8_t line, uint8_t column, uint8_t player) {
 	uint8_t aligned = 1;
 	uint8_t free = 0;
@@ -99,10 +122,7 @@ int horizontal_alignement(uint8_t line, uint8_t column, uint8_t player) {
 	}
 
 	// Return the heuristic value
-	if (free + aligned >= 4) {
-		return aligned;
-	}
-	return 0;
+	return get_heuristic_cost_simple(aligned);
 }
 
 
@@ -131,10 +151,7 @@ int vertical_alignement(uint8_t line, uint8_t column, uint8_t player) {
 	}
 
 	// Return the heuristic value
-	if (free + aligned >= 4) {
-		return aligned;
-	}
-	return 0;
+	return get_heuristic_cost_simple(aligned);
 }
 
 
@@ -145,7 +162,7 @@ int diagonal_alignement(uint8_t line, uint8_t column, uint8_t player) {
 	int8_t j = column;
 	uint8_t current;
 
-	uint8_t final_cost;
+	int final_cost;
 
 	// FIRST DIAGONAL
 	// --------------
@@ -201,12 +218,7 @@ int diagonal_alignement(uint8_t line, uint8_t column, uint8_t player) {
 	}
 
 	// Calculate the heuristic value
-	if (free + aligned >= 4) {
-		final_cost = aligned;
-	} else {
-		final_cost = 0;
-	}
-
+	final_cost = get_heuristic_cost_simple(aligned);
 
 	// SECOND DIAGONAL
 	// ---------------
@@ -267,10 +279,8 @@ int diagonal_alignement(uint8_t line, uint8_t column, uint8_t player) {
 	}
 
 	// Calculate the heuristic value
-	if (free + aligned >= 4) {
-		final_cost += aligned;
-	}
-	
+	//final_cost += get_heuristic_cost_simple(aligned);
+	final_cost = final_cost < get_heuristic_cost_simple(aligned)? get_heuristic_cost_simple(aligned):final_cost;
 	return final_cost;
 }
 
@@ -323,7 +333,6 @@ int minimax(uint8_t column, uint8_t depth, bool maximizingPlayer, uint8_t player
 	int eval;
 	uint8_t *vect;
 	if (depth == 0) {
-		//return stupid_evaluation(column, player, maximizingPlayer);
 		return simple_evaluation(column, player, maximizingPlayer);
 	}
 
@@ -333,7 +342,7 @@ int minimax(uint8_t column, uint8_t depth, bool maximizingPlayer, uint8_t player
 		for (int j = 0; j < NB_COLUMN; j++) {
 			if (vect[j] == 1) {
 				play_for_minmax(j, player);
-				eval = minimax(j, depth-1, false, player);
+				eval = minimax(j, depth-1, false, PLAYER1);
 				maxEval = max(maxEval, eval);
 				undo_for_minmax(j, player);
 			}
@@ -347,7 +356,7 @@ int minimax(uint8_t column, uint8_t depth, bool maximizingPlayer, uint8_t player
 		for (int k = 0; k < NB_COLUMN; k++) {
 			if (vect[k] == 1) {
 				play_for_minmax(k, player);
-				eval = minimax(k, depth-1, true, player);
+				eval = minimax(k, depth-1, true, PLAYER2);
 				minEval = min(minEval, eval);
 				undo_for_minmax(k, player);
 			}

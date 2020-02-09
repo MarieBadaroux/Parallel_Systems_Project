@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Werror -Wall -std=c99 -g
+CFLAGS=-Werror -Wall -Wextra -std=c99 -g
 LDFLAGS=
 EXEC=puissance4
 
