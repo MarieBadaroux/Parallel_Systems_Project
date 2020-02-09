@@ -329,6 +329,14 @@ void undo_for_minmax(uint8_t column, uint8_t player) {
 }
 
 
+uint8_t reverse_player(uint8_t player) {
+	if (player == PLAYER2) {
+		return PLAYER1;
+	}
+	return PLAYER2;
+}
+
+
 int minimax(uint8_t column, uint8_t depth, bool maximizingPlayer, uint8_t player) {
 	int eval;
 	uint8_t *vect;
@@ -342,7 +350,7 @@ int minimax(uint8_t column, uint8_t depth, bool maximizingPlayer, uint8_t player
 		for (int j = 0; j < NB_COLUMN; j++) {
 			if (vect[j] == 1) {
 				play_for_minmax(j, player);
-				eval = minimax(j, depth-1, false, PLAYER1);
+				eval = minimax(j, depth-1, false, reverse_player(player));
 				maxEval = max(maxEval, eval);
 				undo_for_minmax(j, player);
 			}
@@ -356,7 +364,7 @@ int minimax(uint8_t column, uint8_t depth, bool maximizingPlayer, uint8_t player
 		for (int k = 0; k < NB_COLUMN; k++) {
 			if (vect[k] == 1) {
 				play_for_minmax(k, player);
-				eval = minimax(k, depth-1, true, PLAYER2);
+				eval = minimax(k, depth-1, true, reverse_player(player));
 				minEval = min(minEval, eval);
 				undo_for_minmax(k, player);
 			}

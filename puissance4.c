@@ -213,11 +213,11 @@ uint8_t check_win(uint8_t line, uint8_t column, uint8_t player) {
 
 
 int main(void) {
-	uint8_t player1_column;
 #if 0
-	uint8_t player2_column;
+	uint8_t player1_column;
 #endif
-	uint8_t win;
+	uint8_t win1;
+	uint8_t win2;
 	
 	display_grid();
 
@@ -228,7 +228,17 @@ int main(void) {
 		}
 
 		// PLAYER 1
+		// --------
 		printf("Player 1 : ");
+		win1 = play_minimax(PLAYER1);
+
+		display_grid();
+		if (win1 == 1) {
+			printf("Player 1 wins the game \n");
+			break;
+		}
+
+#if 0
 		scanf("%hhu", &player1_column);
 		
 		// If the number of the colonne is not good
@@ -250,22 +260,15 @@ int main(void) {
 			printf("Player 1 wins the game \n");
 			break;
 		}
-
-		// PLAYER 2
-		printf("Player 2 : ");
-		win = play_minimax(PLAYER2);
-
-#if 0
-		scanf("%d", &player2_column);
-		while (player2_column < 1 || player2_column > 7) {
-			printf("Player 2 : Error enter again the column = ");
-			scanf("%d", &player2_column);
-		}
-		win = play(player2_column, PLAYER2);
 #endif
 
+		// PLAYER 2
+		// --------
+		printf("Player 2 : ");
+		win2 = play_minimax(PLAYER2);
+
 		display_grid();
-		if (win == 1) {
+		if (win2 == 1) {
 			printf("Player 2 wins the game \n");
 			break;
 		}
