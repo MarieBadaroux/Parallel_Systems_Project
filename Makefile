@@ -1,6 +1,6 @@
 CC=gcc
-CFLAGS=-Werror -Wall -Wextra -std=c99 -g
-LDFLAGS=
+CFLAGS=-Werror -Wall -Wextra -fopenmp -std=c99 -g
+LDFLAGS=-fopenmp
 EXEC=puissance4
 
 all: $(EXEC)

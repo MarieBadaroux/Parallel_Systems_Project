@@ -295,7 +295,25 @@ int simple_evaluation(uint8_t column, uint8_t player, bool maximizingPlayer) {
 		}
 	}
 
-	int cost = horizontal_alignement(line, column, player) + vertical_alignement(line, column, player) + diagonal_alignement(line, column, player);
+	// COMPUTE COST IN PARALLEL
+	// ------------------------
+	int cost1;
+	int cost2;
+	int cost3;
+	#pragma omp parallel sections
+	{
+		#pragma omp section
+		cost1 = horizontal_alignement(line, column, player);
+		#pragma omp section
+		cost2 = vertical_alignement(line, column, player);
+		#pragma omp section
+		cost3 = diagonal_alignement(line, column, player);
+	}
+
+
+	int cost = cost1 + cost2 + cost3;
+
+	//int cost = horizontal_alignement(line, column, player) + vertical_alignement(line, column, player) + diagonal_alignement(line, column, player);
 
 	if (maximizingPlayer) {
 		return cost;
